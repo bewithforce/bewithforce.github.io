@@ -1,0 +1,24 @@
+body{
+    background: navy;
+}
+
+.main{
+    display: block;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.Rjomba{
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.counter{
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    color: yellow;
+}
