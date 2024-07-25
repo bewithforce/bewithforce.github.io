@@ -6,6 +6,7 @@ class Game {
         this.shouldShowAdOnPlay = false;
 
         this.counter = document.getElementById('counter');
+        this.Rjomba = document.getElementById('Rjomba');
         this.counter.innerText = Number(localStorage.getItem('sum')).toString() + ' $RJMB';
 
         adConfig({
@@ -13,7 +14,7 @@ class Game {
         });
 
         // On click listeners for the game's buttons.
-        this.counter.addEventListener('click', () => {
+        this.Rjomba.addEventListener('click', () => {
             this.play();
         });
     }
