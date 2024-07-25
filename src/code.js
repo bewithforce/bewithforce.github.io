@@ -5,9 +5,6 @@ class Game {
         // Define variables
         this.shouldShowAdOnPlay = false;
 
-        this.canvas = document.getElementById('gameContainer').getContext('2d');
-        this.canvas.font = '24px Arial';
-
         this.counter = document.getElementById('counter');
         this.counter.innerText = Number(localStorage.getItem('sum')).toString() + ' $RJMB';
 
