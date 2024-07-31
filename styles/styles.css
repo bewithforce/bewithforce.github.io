@@ -1,24 +1,42 @@
-body{
+body {
     background: navy;
 }
 
-.main{
+.main {
     display: block;
     align-items: center;
     margin-left: auto;
     margin-right: auto;
 }
 
-.Rjomba{
+.Rjomba {
     display: flex;
     align-items: center;
     margin-left: auto;
     margin-right: auto;
 }
 
-.counter{
+.counter {
     text-align: center;
     margin-left: auto;
     margin-right: auto;
     color: yellow;
+}
+
+.reward {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.banner {
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 90px;
+    & > * {
+        margin-left: auto;
+        margin-right: auto;
+    }
 }

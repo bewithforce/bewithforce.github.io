@@ -1,45 +1,70 @@
 
+async function otherAd(type){
+    let res = 'before';
+    adBreak({
+        type: type,
+        beforeAd:() => {
+            res = 'started'
+        },
+        adBreakDone: (placementInfo) => {
+            res = placementInfo.breakStatus;
+        }
+    });
+    while (res === 'before' || res === 'started') {
+        await new Promise(r => setTimeout(r, 200));
+    }
+    return res;
+}
+
 class Ad {
     constructor() {
         // adConfig({sound: 'on', preloadAdBreaks: 'on'});
         adConfig({sound: 'off', preloadAdBreaks: 'on'});
-
-        adBreak({
-            type: 'preroll',
-            name: 'coin_flip_preroll'
-        });
     }
 
-    rewardAd(){
-        let res = '';
+    async prerollAd(){
+        return otherAd('preroll')
+    }
+
+    async startAd(){
+        return otherAd('start')
+    }
+
+    async pauseAd(){
+        return otherAd('pause')
+    }
+
+    async nextAd(){
+        return otherAd('next')
+    }
+
+    async browseAd(){
+        return otherAd('browse')
+    }
+
+    async rewardAd() {
+        let res = 'before';
         adBreak({
             type: 'reward',
-            name: 'one_more_chance',
-            beforeAd: () => {
-            },
-            afterAd: () => {
+            beforeAd:() => {
+                res = 'started'
             },
             beforeReward: (showAdFn) => {
-                /*const r = confirm('Watch this video to get one more chance?');
-                if (r) {
-                    showAdFn();
-                } else {
-                    alert('You need to restart the game');
-                    this.shouldRestart = true;
-                }*/
                 showAdFn();
             },
             adDismissed: () => {
+                res = 'viewed'
             },
             adViewed: () => {
+                res = 'viewed'
+            },
+            adBreakDone: (placementInfo) => {
+                res = placementInfo.breakStatus;
             }
         });
-    }
-
-    justAd(){
-        adBreak({
-            type: 'next',
-            name: 'continue_game'
-        });
+        while (res === 'before' || res === 'started') {
+            await new Promise(r => setTimeout(r, 200));
+        }
+        return res;
     }
 }
