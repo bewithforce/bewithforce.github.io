@@ -1,10 +1,8 @@
-
-
 class Game {
     constructor() {
         // Define variables
         this.shouldShowAdOnPlay = false;
-
+        this.ad = new Ad();
         this.counter = document.getElementById('counter');
         this.Rjomba = document.getElementById('Rjomba');
         this.counter.innerText = Number(localStorage.getItem('sum')).toString() + ' $RJMB';
@@ -24,14 +22,7 @@ class Game {
         if (this.shouldShowAdOnPlay) {
             this.shouldShowAdOnPlay = false;
             console.log('ad')
-            adBreak({
-                type: 'next',  // ad shows at start of next level
-                name: 'restart-game',
-                beforeAd: () => {
-                },  // You may also want to mute the game's sound.
-                afterAd: () => {
-                },    // resume the game flow.
-            });
+            this.ad.justAd();
         }
 
         let sum = Number(localStorage.getItem('sum'));
