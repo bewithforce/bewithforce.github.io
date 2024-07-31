@@ -53,7 +53,7 @@ class Ad {
                 showAdFn();
             },
             adDismissed: () => {
-                res = 'viewed'
+                res = 'dismissed'
             },
             adViewed: () => {
                 res = 'viewed'
