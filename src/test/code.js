@@ -1,5 +1,9 @@
+import Ad from './Ad.js'
+
 class Game {
     constructor() {
+        this.ad = new Ad('111111');
+        this.ad.showAd('banner')
         this.counter = document.getElementById('counter');
         this.Rjomba = document.getElementById('Rjomba');
         this.counter.innerText = Number(localStorage.getItem('sum')).toString() + ' $RJMB';
@@ -18,8 +22,14 @@ class Game {
     }
 
     play() {
-        this.add(1);
+        let sum = this.add(1);
+        if (sum % 10 === 0) {
+            console.log('ad')
+            this.ad.nextAd().then(r => console.log(r));
+        }
     }
 }
 
-const game = new Game();
+document.addEventListener('DOMContentLoaded', function () {
+    const game = new Game();
+});
