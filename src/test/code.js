@@ -1,4 +1,4 @@
-import Ad from './Ad.js'
+import Ad from '/src/test/Ad.js';
 
 class Game {
     constructor() {
