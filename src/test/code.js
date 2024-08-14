@@ -2,8 +2,7 @@ import Ad from './ad.js';
 
 class Game {
     constructor() {
-        this.ad = new Ad('111111');
-        this.ad.showAd('banner')
+        this.ad = new Ad('111111', 'banner');
         this.counter = document.getElementById('counter');
         this.Rjomba = document.getElementById('Rjomba');
         this.counter.innerText = Number(localStorage.getItem('sum')).toString() + ' $RJMB';

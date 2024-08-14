@@ -66,9 +66,11 @@ function setupAdOverlay() {
 }
 
 export default class Ad {
-    constructor(id) {
+    constructor(id, banner_div_id) {
         this.id = id;
+        this.banner_div_id = banner_div_id;
         setupAdOverlay();
+        this.showAd(banner_div_id);
     }
 
     async showAd(elementId) {
@@ -128,28 +130,16 @@ export default class Ad {
     }
 
     async rewardAd() {
-        let res = 'before';
-        adBreak({
-            type: 'reward',
-            beforeAd: () => {
-                res = 'started'
-            },
-            beforeReward: (showAdFn) => {
-                showAdFn();
-            },
-            adDismissed: () => {
-                res = 'dismissed'
-            },
-            adViewed: () => {
-                res = 'viewed'
-            },
-            adBreakDone: (placementInfo) => {
-                res = placementInfo.breakStatus;
-            }
+        window.googletag = window.googletag || {cmd: []};
+        googletag.cmd.push(function () {
+            googletag.defineOutOfPageSlot( '/21857590943,22960671442/tgads_test/rewarded_ads', googletag.enums.OutOfPageFormat.REWARDED)
+            googletag.pubads().set("page_url", "playhop.com");
+            googletag.pubads().setTargeting("gameID", this.id)
         });
-        while (res === 'before' || res === 'started') {
-            await new Promise(r => setTimeout(r, 200));
-        }
-        return res;
+
+
+        googletag.cmd.push(function () {
+            googletag.display(elementId);
+        });
     }
 }
