@@ -3,8 +3,9 @@ import Ad from './ad.js';
 class Game {
     constructor() {
         this.ad = new Ad('111111');
+        setTimeout(()=>{}, 2000)
         //this.ad.showSpecBannerAd('banner');
-        this.ad.showBannerAd();
+        // this.ad.showBannerAd();
         this.rewardButton = document.getElementById('reward');
         this.counter = document.getElementById('counter');
         this.Rjomba = document.getElementById('Rjomba');
@@ -34,9 +35,8 @@ class Game {
 
     play() {
         let sum = this.add(1);
-        if (sum % 10 === 0) {
-            console.log('ad')
-            this.ad.showManualInterstitialAd().then(r => console.log(r));
+        if(this.ad.isInterstitialReady() === true){
+            this.ad.showManualInterstitialAd();
         }
     }
 }

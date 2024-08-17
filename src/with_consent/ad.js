@@ -1,4 +1,3 @@
-
 const first_interstitial_slot = '/21857590943,22960671442/tgads_test/manual_interstitial';
 const first_interstitial_url = 'playhop.com';
 
@@ -79,16 +78,87 @@ function setupAdOverlay() {
     document.body.appendChild(adOverlay);
 }
 
+async function showManualInterstitialAd(id) {
+
+
+}
+
+let interstitial_ready_slot;
+let interstitial_ad;
+let banner_ad;
+let rewarded_ad;
+
+let interstitial_ready = false;
+
+function setupAd(id) {
+    window.googletag = window.googletag || {cmd: []};
+    googletag.cmd.push(() => {
+        banner_ad = googletag.defineOutOfPageSlot(
+            banner_slot, googletag.enums.OutOfPageFormat.BOTTOM_ANCHOR
+        );
+        if (banner_ad) {
+            banner_ad.addService(googletag.pubads());
+        }
+
+        defineGameManualInterstitialSlot();
+
+        rewarded_ad = googletag.defineOutOfPageSlot(
+            reward_slot,
+            googletag.enums.OutOfPageFormat.REWARDED
+        );
+        if (rewarded_ad) {
+            rewarded_ad.addService(googletag.pubads());
+        }
+
+        googletag.pubads().setTargeting("gameID", id);
+        googletag.pubads().enableSingleRequest();
+        googletag.pubads().collapseEmptyDivs();
+        googletag.enableServices();
+    });
+    googletag.cmd.push(function () {
+        googletag.pubads().set("page_url", banner_url);
+        googletag.display(banner_ad);
+    });
+}
+
+function defineGameManualInterstitialSlot() {
+
+    let interstitial_ad = googletag.defineOutOfPageSlot(
+        manual_interstitial_slot,
+        googletag.enums.OutOfPageFormat.GAME_MANUAL_INTERSTITIAL);
+    if (interstitial_ad) {
+        interstitial_ad.addService(googletag.pubads());
+        googletag.pubads().addEventListener('gameManualInterstitialSlotReady',
+            (slotReadyEvent) => {
+                if (interstitial_ad === slotReadyEvent.slot) {
+                    interstitial_ready = true;
+                    interstitial_ready_slot = slotReadyEvent;
+                }
+            });
+        googletag.pubads().addEventListener('gameManualInterstitialSlotClosed',
+            resumeGame);
+    }
+
+}
+
+function resumeGame() {
+    document.getElementById('trigger').style.display = 'none';
+    googletag.destroySlots([interstitial_ad]);
+    defineGameManualInterstitialSlot();
+    googletag.display(interstitial_ad);
+    interstitial_ready = false;
+}
+
 
 export default class Ad {
     constructor(id) {
-        this.id = id;
         setupAdOverlay();
-    //    this.showFirstInterstitialAd(id);
+        setupAd(id);
+
+        //    this.showFirstInterstitialAd(id);
     }
 
     async showFirstInterstitialAd() {
-        window.googletag = window.googletag || {cmd: []};
         let game_id = this.id;
         googletag.cmd.push(function () {
             const interstitial_ad = googletag.defineOutOfPageSlot(
@@ -102,38 +172,21 @@ export default class Ad {
         });
     }
 
-    async showManualInterstitialAd() {
-        window.googletag = window.googletag || {cmd: []};
-        let game_id = this.id;
-        googletag.cmd.push(function () {
-            const interstitial_ad = googletag.defineOutOfPageSlot(
-                manual_interstitial_slot,
-                googletag.enums.OutOfPageFormat.INTERSTITIAL
-            ).addService(googletag.pubads());
-            googletag.pubads().set("page_url", manual_interstitial_url);
-            googletag.pubads().setTargeting("gameID", game_id);
-            googletag.pubads().enableSingleRequest();
-            googletag.pubads().collapseEmptyDivs();
-            googletag.pubads().setCentering(true);
-            googletag.enableServices();
-            googletag.display(interstitial_ad);
-        });
-
+    showManualInterstitialAd() {
+        if(interstitial_ready === true) {
+            interstitial_ready_slot.makeGameManualInterstitialVisible();
+        }
     }
 
-    async showBannerAd() {
-        window.googletag = window.googletag || {cmd: []};
-        let game_id = this.id;
+    isInterstitialReady() {
+        return interstitial_ready;
+    }
+
+    showBannerAd() {
+        let banner_ad = this.banner_ad;
         googletag.cmd.push(function () {
-            const ad = googletag.defineOutOfPageSlot(
-                banner_slot, googletag.enums.OutOfPageFormat.BOTTOM_ANCHOR
-            ).addService(googletag.pubads());
             googletag.pubads().set("page_url", banner_url);
-            googletag.pubads().setTargeting("gameID", game_id)
-            googletag.pubads().enableSingleRequest();
-            googletag.pubads().collapseEmptyDivs();
-            googletag.enableServices();
-            googletag.display(ad);
+            googletag.display(banner_ad);
         });
     }
 
@@ -171,16 +224,16 @@ export default class Ad {
             googletag.enableServices();
 
             googletag.pubads().addEventListener('rewardedSlotReady',
-                function(evt) {
+                function (evt) {
                     evt.makeRewardedVisible();
                 });
             googletag.pubads().addEventListener('rewardedSlotGranted',
-                function(evt) {
+                function (evt) {
                     res = 'viewed';
                     googletag.destroySlots([rewardedSlot]);
                 });
             googletag.pubads().addEventListener('rewardedSlotClosed',
-                function(evt) {
+                function (evt) {
                     res = 'dismissed';
                     googletag.destroySlots([rewardedSlot]);
                 });
