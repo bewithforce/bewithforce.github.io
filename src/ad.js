@@ -88,7 +88,6 @@ let interstitial_ready_slot;
 let interstitial_ad;
 let first_ad;
 let banner_ad;
-let rewarded_ad;
 let rewarded_result;
 
 let interstitial_ready = false;
@@ -105,35 +104,13 @@ function setupAd(id) {
 
         defineGameManualInterstitialSlot();
 
-        rewarded_ad = googletag.defineOutOfPageSlot(
-            reward_slot,
-            googletag.enums.OutOfPageFormat.REWARDED
-        );
-        if (rewarded_ad) {
-            rewarded_ad.addService(googletag.pubads());
-            googletag.pubads().addEventListener('rewardedSlotReady',
-                (evt) => {
-                    evt.makeRewardedVisible();
-                });
-            googletag.pubads().addEventListener('rewardedSlotGranted',
-                (evt) => {
-                    rewarded_result = 'viewed';
-                    googletag.destroySlots([rewardedSlot]);
-                });
-            googletag.pubads().addEventListener('rewardedSlotClosed',
-                (evt) => {
-                    rewarded_result = 'dismissed';
-                    googletag.destroySlots([rewardedSlot]);
-                });
-        }
-
         first_ad = googletag.defineSlot(
             first_interstitial_slot,
             first_interstitial_size,
-            'div-ad'
+            'ad-div'
         );
         if (first_ad) {
-            rewarded_ad.addService(googletag.pubads());
+            first_ad.addService(googletag.pubads());
         }
         googletag.pubads().setTargeting("gameID", id);
         googletag.pubads().enableSingleRequest();
@@ -178,7 +155,7 @@ export default class Ad {
     constructor(id) {
         setupAdOverlay();
         setupAd(id);
-        this.showFirstInterstitialAd(10);
+      //  this.showFirstInterstitialAd(10);
     }
 
     async showFirstInterstitialAd(time) {
@@ -193,7 +170,7 @@ export default class Ad {
 
         googletag.cmd.push(function () {
             googletag.pubads().set("page_url", first_interstitial_slot);
-            googletag.display(elementId);
+            googletag.display('ad-div');
         });
 
         // Таймер для активации кнопки
@@ -209,7 +186,7 @@ export default class Ad {
             }
         }, 1000);
 
-        closeButton.addEventListener('click', () => {
+        closeButton.addEventListener('click', function () {
             if (this.classList.contains('enabled')) {
                 adOverlay.style.display = 'none';
                 clearInterval(countdown);
@@ -239,6 +216,27 @@ export default class Ad {
     async rewardAd() {
         rewarded_result = 'before';
         googletag.cmd.push(() => {
+            let rewarded_ad = googletag.defineOutOfPageSlot(
+                reward_slot,
+                googletag.enums.OutOfPageFormat.REWARDED
+            );
+            if (rewarded_ad) {
+                rewarded_ad.addService(googletag.pubads());
+                googletag.pubads().addEventListener('rewardedSlotReady',
+                    (evt) => {
+                        evt.makeRewardedVisible();
+                    });
+                googletag.pubads().addEventListener('rewardedSlotGranted',
+                    (evt) => {
+                        rewarded_result = 'viewed';
+                        googletag.destroySlots([rewarded_ad]);
+                    });
+                googletag.pubads().addEventListener('rewardedSlotClosed',
+                    (evt) => {
+                        rewarded_result = 'dismissed';
+                        googletag.destroySlots([rewarded_ad]);
+                    });
+            }
             googletag.pubads().set("page_url", reward_url);
             googletag.display(rewarded_ad);
         });

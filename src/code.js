@@ -3,9 +3,7 @@ import Ad from './ad.js';
 class Game {
     constructor() {
         this.ad = new Ad('111111');
-        setTimeout(()=>{}, 2000)
-        //this.ad.showSpecBannerAd('banner');
-        // this.ad.showBannerAd();
+        this.ad.showBannerAd();
         this.rewardButton = document.getElementById('reward');
         this.counter = document.getElementById('counter');
         this.Rjomba = document.getElementById('Rjomba');
