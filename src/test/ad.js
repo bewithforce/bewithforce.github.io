@@ -1,4 +1,22 @@
-// Функция для добавления стилей и HTML-разметки для рекламы
+
+const first_interstitial_slot = '/21857590943,22960671442/tgads_test/manual_interstitial';
+const first_interstitial_url = 'playhop.com';
+
+const manual_interstitial_slot = '/21857590943,22960671442/tgads_test/manual_interstitial';
+const manual_interstitial_url = 'playhop.com';
+
+const reward_slot = '/21857590943,22960671442/tgads_test/rewarded_ads';
+const reward_url = 'playhop.com';
+
+const big_banner_slot = '/21857590943,22960671442/tgads_test/300x250';
+const big_banner_size = [[300, 300], [300, 250]];
+const big_banner_url = 'playhop.com';
+
+const small_banner_slot = '/21857590943,22960671442/tgads_test/300x250';
+const small_banner_size = [[300, 300], [300, 250]];
+const small_banner_url = 'playhop.com';
+
+
 function setupAdOverlay() {
     // Создаем стили для рекламы
     const style = document.createElement('style');
@@ -65,24 +83,59 @@ function setupAdOverlay() {
     document.body.appendChild(adOverlay);
 }
 
+
 export default class Ad {
-    constructor(id, banner_div_id) {
+    constructor(id) {
         this.id = id;
-        this.banner_div_id = banner_div_id;
         setupAdOverlay();
-        this.showAd(banner_div_id);
+        this.showFirstInterstitialAd(id);
     }
 
-    async showAd(elementId) {
+    async showFirstInterstitialAd() {
         window.googletag = window.googletag || {cmd: []};
+        let game_id = this.id;
+        googletag.cmd.push(function () {
+            const interstitial_ad = googletag.defineOutOfPageSlot(
+                first_interstitial_slot,
+                googletag.enums.OutOfPageFormat.INTERSTITIAL
+            ).addService(googletag.pubads())
+            googletag.pubads().set("page_url", first_interstitial_url);
+            googletag.pubads().setTargeting("gameID", game_id)
+            googletag.pubads().enableSingleRequest();
+            googletag.pubads().collapseEmptyDivs();
+            googletag.enableServices();
+            googletag.display(interstitial_ad);
+        });
+    }
+
+    async showManualInterstitialAd() {
+        window.googletag = window.googletag || {cmd: []};
+        let game_id = this.id;
+        googletag.cmd.push(function () {
+            const interstitial_ad = googletag.defineOutOfPageSlot(
+                manual_interstitial_slot,
+                googletag.enums.OutOfPageFormat.GAME_MANUAL_INTERSTITIAL
+            ).addService(googletag.pubads());
+            googletag.pubads().set("page_url", manual_interstitial_url);
+            googletag.pubads().setTargeting("gameID", game_id)
+            googletag.pubads().enableSingleRequest();
+            googletag.pubads().collapseEmptyDivs();
+            googletag.enableServices();
+            googletag.display(interstitial_ad);
+        });
+    }
+
+    async showBigBannerAd(banner_div_id) {
+        window.googletag = window.googletag || {cmd: []};
+        let game_id = this.id;
         googletag.cmd.push(function () {
             googletag.defineSlot(
-                '/21857590943,22960671442/tgads_test/300x250',
-                [[300, 300], [300, 250]],
-                elementId
+                big_banner_slot,
+                big_banner_size,
+                banner_div_id
             ).addService(googletag.pubads());
-            googletag.pubads().set("page_url", "playhop.com");
-            googletag.pubads().setTargeting("gameID", this.id)
+            googletag.pubads().set("page_url", big_banner_url);
+            googletag.pubads().setTargeting("gameID", game_id)
             googletag.pubads().enableSingleRequest();
             googletag.pubads().collapseEmptyDivs();
             googletag.enableServices();
@@ -90,56 +143,65 @@ export default class Ad {
 
 
         googletag.cmd.push(function () {
-            googletag.display(elementId);
+            googletag.display(banner_div_id);
         });
     }
 
-    async nextAd() {
-        const adOverlay = document.getElementById('ad-overlay');
-        const adDiv = document.getElementById('ad-div');
-        const closeButton = document.getElementById('close-ad-button');
-        const timer = document.getElementById('timer');
+    async showSmallBannerAd(banner_div_id) {
+        window.googletag = window.googletag || {cmd: []};
+        let game_id = this.id;
+        googletag.cmd.push(function () {
+            googletag.defineSlot(
+                small_banner_slot,
+                small_banner_size,
+                banner_div_id
+            ).addService(googletag.pubads());
+            googletag.pubads().set("page_url", small_banner_url);
+            googletag.pubads().setTargeting("gameID", game_id)
+            googletag.pubads().enableSingleRequest();
+            googletag.pubads().collapseEmptyDivs();
+            googletag.enableServices();
+        });
 
-        adOverlay.style.display = 'flex'; // Показываем рекламный блок
 
-        // Изначально показываем кнопку закрытия как неактивную
-        closeButton.classList.remove('enabled');
-
-        this.showAd('ad-div');
-
-        // Таймер для активации кнопки
-        let remainingTime = 5;
-        const countdown = setInterval(function () {
-            timer.textContent = `${remainingTime} seconds`;
-            remainingTime -= 1;
-
-            if (remainingTime < 0) {
-                clearInterval(countdown);
-                closeButton.classList.add('enabled'); // Делает кнопку активной
-                timer.textContent = 'Close the ad';
-            }
-        }, 1000);
-
-        closeButton.addEventListener('click', function () {
-            if (this.classList.contains('enabled')) {
-                adOverlay.style.display = 'none'; // Скрываем рекламный блок
-                clearInterval(countdown); // Очищаем таймер, если реклама была закрыта до истечения времени
-            }
-
+        googletag.cmd.push(function () {
+            googletag.display(banner_div_id);
         });
     }
 
     async rewardAd() {
-        window.googletag = window.googletag || {cmd: []};
-        googletag.cmd.push(function () {
-            googletag.defineOutOfPageSlot( '/21857590943,22960671442/tgads_test/rewarded_ads', googletag.enums.OutOfPageFormat.REWARDED)
-            googletag.pubads().set("page_url", "playhop.com");
-            googletag.pubads().setTargeting("gameID", this.id)
-        });
+        let res = 'before';
+        let game_id = this.id;
+        googletag = window.googletag || {cmd: []};
+        googletag.cmd.push(() => {
+            const rewardedSlot = googletag.defineOutOfPageSlot(
+                reward_slot,
+                googletag.enums.OutOfPageFormat.REWARDED
+            ).addService(googletag.pubads());
+            googletag.pubads().set("page_url", reward_url);
+            googletag.pubads().setTargeting("gameID", game_id)
 
+            googletag.enableServices();
 
-        googletag.cmd.push(function () {
-            googletag.display(elementId);
+            googletag.pubads().addEventListener('rewardedSlotReady',
+                function(evt) {
+                    evt.makeRewardedVisible();
+                });
+            googletag.pubads().addEventListener('rewardedSlotGranted',
+                function(evt) {
+                    res = 'viewed';
+                    googletag.destroySlots([rewardedSlot]);
+                });
+            googletag.pubads().addEventListener('rewardedSlotClosed',
+                function(evt) {
+                    res = 'dismissed';
+                    googletag.destroySlots([rewardedSlot]);
+                });
+            googletag.display(rewardedSlot);
         });
+        while (res === 'before' || res === 'started') {
+            await new Promise(r => setTimeout(r, 200));
+        }
+        return res;
     }
 }
