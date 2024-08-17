@@ -8,13 +8,9 @@ const manual_interstitial_url = 'playhop.com';
 const reward_slot = '/21857590943,22960671442/tgads_test/rewarded_ads';
 const reward_url = 'playhop.com';
 
-const big_banner_slot = '/21857590943,22960671442/tgads_test/300x250';
-const big_banner_size = [[300, 300], [300, 250]];
-const big_banner_url = 'playhop.com';
-
-const small_banner_slot = '/21857590943,22960671442/tgads_test/300x250';
-const small_banner_size = [[300, 300], [300, 250]];
-const small_banner_url = 'playhop.com';
+const banner_slot = '/21857590943,22960671442/tgads_test/300x250';
+const banner_size = [[300, 300], [300, 250]];
+const banner_url = 'playhop.com';
 
 
 function setupAdOverlay() {
@@ -88,7 +84,7 @@ export default class Ad {
     constructor(id) {
         this.id = id;
         setupAdOverlay();
-        this.showFirstInterstitialAd(id);
+    //    this.showFirstInterstitialAd(id);
     }
 
     async showFirstInterstitialAd() {
@@ -100,9 +96,7 @@ export default class Ad {
                 googletag.enums.OutOfPageFormat.INTERSTITIAL
             ).addService(googletag.pubads())
             googletag.pubads().set("page_url", first_interstitial_url);
-            googletag.pubads().setTargeting("gameID", game_id)
-            googletag.pubads().enableSingleRequest();
-            googletag.pubads().collapseEmptyDivs();
+            googletag.pubads().setTargeting("gameID", game_id);
             googletag.enableServices();
             googletag.display(interstitial_ad);
         });
@@ -114,58 +108,51 @@ export default class Ad {
         googletag.cmd.push(function () {
             const interstitial_ad = googletag.defineOutOfPageSlot(
                 manual_interstitial_slot,
-                googletag.enums.OutOfPageFormat.GAME_MANUAL_INTERSTITIAL
+                googletag.enums.OutOfPageFormat.INTERSTITIAL
             ).addService(googletag.pubads());
             googletag.pubads().set("page_url", manual_interstitial_url);
-            googletag.pubads().setTargeting("gameID", game_id)
+            googletag.pubads().setTargeting("gameID", game_id);
             googletag.pubads().enableSingleRequest();
             googletag.pubads().collapseEmptyDivs();
+            googletag.pubads().setCentering(true);
             googletag.enableServices();
             googletag.display(interstitial_ad);
         });
+
     }
 
-    async showBigBannerAd(banner_div_id) {
+    async showBannerAd() {
         window.googletag = window.googletag || {cmd: []};
         let game_id = this.id;
         googletag.cmd.push(function () {
-            googletag.defineSlot(
-                big_banner_slot,
-                big_banner_size,
-                banner_div_id
+            const ad = googletag.defineOutOfPageSlot(
+                banner_slot, googletag.enums.OutOfPageFormat.BOTTOM_ANCHOR
             ).addService(googletag.pubads());
-            googletag.pubads().set("page_url", big_banner_url);
+            googletag.pubads().set("page_url", banner_url);
             googletag.pubads().setTargeting("gameID", game_id)
             googletag.pubads().enableSingleRequest();
             googletag.pubads().collapseEmptyDivs();
             googletag.enableServices();
-        });
-
-
-        googletag.cmd.push(function () {
-            googletag.display(banner_div_id);
+            googletag.display(ad);
         });
     }
 
-    async showSmallBannerAd(banner_div_id) {
+
+    async showSpecBannerAd(element_id) {
         window.googletag = window.googletag || {cmd: []};
         let game_id = this.id;
         googletag.cmd.push(function () {
-            googletag.defineSlot(
-                small_banner_slot,
-                small_banner_size,
-                banner_div_id
+            const ad = googletag.defineSlot(
+                banner_slot,
+                banner_size,
+                element_id
             ).addService(googletag.pubads());
-            googletag.pubads().set("page_url", small_banner_url);
+            googletag.pubads().set("page_url", banner_url);
             googletag.pubads().setTargeting("gameID", game_id)
             googletag.pubads().enableSingleRequest();
             googletag.pubads().collapseEmptyDivs();
             googletag.enableServices();
-        });
-
-
-        googletag.cmd.push(function () {
-            googletag.display(banner_div_id);
+            googletag.display(ad);
         });
     }
 

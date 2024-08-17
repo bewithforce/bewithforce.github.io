@@ -3,7 +3,8 @@ import Ad from './ad.js';
 class Game {
     constructor() {
         this.ad = new Ad('111111');
-        this.ad.showBigBannerAd('banner');
+        //this.ad.showSpecBannerAd('banner');
+        this.ad.showBannerAd();
         this.rewardButton = document.getElementById('reward');
         this.counter = document.getElementById('counter');
         this.Rjomba = document.getElementById('Rjomba');
