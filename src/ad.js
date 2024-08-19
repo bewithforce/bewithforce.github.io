@@ -1,4 +1,4 @@
-const first_interstitial_slot = '/21857590943,22960671442/tgads_test/300x250';
+const first_interstitial_slot = '/21857590943,22960671442/tgads_test/manual_interstitial';
 const first_interstitial_size = [[300, 300], [300, 250]];
 const first_interstitial_url = 'playhop.com';
 
@@ -89,6 +89,7 @@ let interstitial_ad;
 let first_ad;
 let banner_ad;
 let rewarded_result;
+let rewarded_event;
 
 let interstitial_ready = false;
 
@@ -117,10 +118,7 @@ function setupAd(id) {
         googletag.pubads().collapseEmptyDivs();
         googletag.enableServices();
     });
-    googletag.cmd.push(() => {
-        googletag.pubads().set("page_url", banner_url);
-        googletag.display(banner_ad);
-    });
+    setupRewardedAd();
 }
 
 function defineGameManualInterstitialSlot() {
@@ -151,11 +149,39 @@ function resumeGame() {
     interstitial_ready = false;
 }
 
+function setupRewardedAd(){
+    googletag.cmd.push(() => {
+        let rewarded_ad = googletag.defineOutOfPageSlot(
+            reward_slot,
+            googletag.enums.OutOfPageFormat.REWARDED
+        );
+        if (rewarded_ad) {
+            rewarded_ad.addService(googletag.pubads());
+            googletag.pubads().addEventListener('rewardedSlotReady',
+                (evt) => {
+                    rewarded_event = evt;
+                });
+            googletag.pubads().addEventListener('rewardedSlotGranted',
+                (evt) => {
+                    rewarded_result = 'viewed';
+                    googletag.destroySlots([rewarded_ad]);
+                });
+            googletag.pubads().addEventListener('rewardedSlotClosed',
+                (evt) => {
+                    rewarded_result = 'dismissed';
+                    googletag.destroySlots([rewarded_ad]);
+                });
+        }
+        googletag.pubads().set("page_url", reward_url);
+        googletag.display(rewarded_ad);
+    });
+}
+
 export default class Ad {
     constructor(id) {
         setupAdOverlay();
         setupAd(id);
-      //  this.showFirstInterstitialAd(10);
+        this.showFirstInterstitialAd(5);
     }
 
     async showFirstInterstitialAd(time) {
@@ -206,7 +232,6 @@ export default class Ad {
     }
 
     showBannerAd() {
-        let banner_ad = this.banner_ad;
         googletag.cmd.push(() => {
             googletag.pubads().set("page_url", banner_url);
             googletag.display(banner_ad);
@@ -215,34 +240,11 @@ export default class Ad {
 
     async rewardAd() {
         rewarded_result = 'before';
-        googletag.cmd.push(() => {
-            let rewarded_ad = googletag.defineOutOfPageSlot(
-                reward_slot,
-                googletag.enums.OutOfPageFormat.REWARDED
-            );
-            if (rewarded_ad) {
-                rewarded_ad.addService(googletag.pubads());
-                googletag.pubads().addEventListener('rewardedSlotReady',
-                    (evt) => {
-                        evt.makeRewardedVisible();
-                    });
-                googletag.pubads().addEventListener('rewardedSlotGranted',
-                    (evt) => {
-                        rewarded_result = 'viewed';
-                        googletag.destroySlots([rewarded_ad]);
-                    });
-                googletag.pubads().addEventListener('rewardedSlotClosed',
-                    (evt) => {
-                        rewarded_result = 'dismissed';
-                        googletag.destroySlots([rewarded_ad]);
-                    });
-            }
-            googletag.pubads().set("page_url", reward_url);
-            googletag.display(rewarded_ad);
-        });
+        rewarded_event.makeRewardedVisible();
         while (rewarded_result === 'before') {
             await new Promise(r => setTimeout(r, 200));
         }
+        setupRewardedAd();
         return rewarded_result;
     }
 }

@@ -4,6 +4,7 @@ class Game {
     constructor() {
         this.ad = new Ad('111111');
         this.ad.showBannerAd();
+     //   this.ad.showFirstInterstitialAd(5);
         this.rewardButton = document.getElementById('reward');
         this.counter = document.getElementById('counter');
         this.Rjomba = document.getElementById('Rjomba');
