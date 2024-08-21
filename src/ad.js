@@ -142,7 +142,6 @@ function defineGameManualInterstitialSlot() {
 }
 
 function resumeGame() {
-    document.getElementById('trigger').style.display = 'none';
     googletag.destroySlots([interstitial_ad]);
     defineGameManualInterstitialSlot();
     googletag.display(interstitial_ad);
