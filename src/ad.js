@@ -193,6 +193,9 @@ export default class Ad {
         // Изначально показываем кнопку закрытия как неактивную
         closeButton.classList.remove('enabled');
 
+        googletag.cmd.push(() => {
+            googletag.pubads().setTargeting("gameID", '111112');
+        });
         googletag.cmd.push(function () {
             googletag.pubads().set("page_url", first_interstitial_slot);
             googletag.display('ad-div');
@@ -221,6 +224,9 @@ export default class Ad {
     }
 
     showManualInterstitialAd() {
+        googletag.cmd.push(() => {
+            googletag.pubads().setTargeting("gameID", '111112');
+        });
         if (interstitial_ready === true) {
             interstitial_ready_slot.makeGameManualInterstitialVisible();
         }
@@ -232,12 +238,16 @@ export default class Ad {
 
     showBannerAd() {
         googletag.cmd.push(() => {
+            googletag.pubads().setTargeting("gameID", '111111');
             googletag.pubads().set("page_url", banner_url);
             googletag.display(banner_ad);
         });
     }
 
     async rewardAd() {
+        googletag.cmd.push(() => {
+            googletag.pubads().setTargeting("gameID", '111112');
+        });
         rewarded_result = 'before';
         rewarded_event.makeRewardedVisible();
         while (rewarded_result === 'before') {
