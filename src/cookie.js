@@ -1,4 +1,4 @@
-import './cookieconsent-core.umd.js';
+import './cookieconsent.umd.js';
 
 
 export default class Cookie {
