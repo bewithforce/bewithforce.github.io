@@ -56,6 +56,9 @@ export default class Cookie {
                 }
             }
         }).then(r => console.log(r));
+        document.head.insertAdjacentHTML(
+            'beforeend',
+            '<link rel="stylesheet" href="./cookieconsent.css" />');
     }
 }
 
