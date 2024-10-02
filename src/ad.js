@@ -1,3 +1,5 @@
+import Cookie from "./cookie";
+
 const first_interstitial_slot = '/21857590943,22960671442/tgads_test/manual_interstitial';
 const first_interstitial_size = [[300, 300], [300, 250]];
 const first_interstitial_url = 'playhop.com';
@@ -94,6 +96,7 @@ let rewarded_event;
 let interstitial_ready = false;
 
 function setupAd(id) {
+    let cookie = new Cookie();
     window.googletag = window.googletag || {cmd: []};
     googletag.cmd.push(() => {
         banner_ad = googletag.defineOutOfPageSlot(
