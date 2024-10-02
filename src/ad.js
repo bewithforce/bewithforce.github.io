@@ -1,4 +1,4 @@
-import Cookie from "./cookie";
+import Cookie from "./cookie.js";
 
 const first_interstitial_slot = '/21857590943,22960671442/tgads_test/manual_interstitial';
 const first_interstitial_size = [[300, 300], [300, 250]];

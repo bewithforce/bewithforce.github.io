@@ -1,10 +1,5 @@
-/*!
-* CookieConsent 3.0.1
-* https://github.com/orestbida/cookieconsent
-* Author Orest Bida
-* Released under the MIT License
-*/
-import CookieConsent from "vanilla-cookieconsent";
+import './cookieconsent-core.umd.js';
+
 
 export default class Cookie {
     constructor() {
@@ -61,8 +56,7 @@ export default class Cookie {
                     }
                 }
             }
-        });
+        }).then(r => console.log(r));
     }
-
 }
 
