@@ -96,7 +96,6 @@ let rewarded_event;
 let interstitial_ready = false;
 
 function setupAd(id) {
-    let cookie = new Cookie();
     window.googletag = window.googletag || {cmd: []};
     googletag.cmd.push(() => {
         banner_ad = googletag.defineOutOfPageSlot(
@@ -181,6 +180,7 @@ function setupRewardedAd(){
 
 export default class Ad {
     constructor(id) {
+        let cookie = new Cookie();
         setupAdOverlay();
         setupAd(id);
         this.showFirstInterstitialAd(5);
