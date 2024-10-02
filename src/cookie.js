@@ -4,7 +4,6 @@ import './cookieconsent.umd.js';
 export default class Cookie {
     constructor() {
         CookieConsent.run({
-
             categories: {
                 necessary: {
                     enabled: true,  // this category is enabled by default
